@@ -82,7 +82,6 @@
 
 
     </style>
-    <oc-product-api id="productsApi"></oc-product-api>
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-12">
@@ -182,15 +181,6 @@
 
           }
 
-          /**
-           * Fetches a product's details
-           */
-          _getSingleProduct() {
-              this.$.productsApi.getProduct(this._productId)
-                  .then(function (request) {
-                      this.product = request.response;
-                  }.bind(this));
-          }
 
           /**
            * Close the product to show the list of products. Listens in shop-product-list

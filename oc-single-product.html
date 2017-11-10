@@ -1,36 +1,210 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../oc-product-api/oc-product-api.html">
 
 <dom-module id="oc-single-product">
   <template>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
+
       :host {
         display: block;
+        font-family: var(--paper-font-common-base_-_font-family);
+
       }
+
+      .category-heading {
+        border-top: 1px #cecece solid;
+        border-bottom: 1px #cecece solid;
+        background: #f8f8f8;
+        color: #000;
+        margin-top:-1px;
+      }
+      .clear-heading {
+        background: #fff;
+        padding: 12px 0;
+        margin-top:-1px;
+      }
+
+      h3 {
+        font-size:1.13em !important;
+        margin: 10px 0 !important;
+      }
+
+      .add-button-row {
+        background: #ffffff;
+        margin: 15px 0;
+      }
+      .add-button {
+        width: 100%;
+        color: #fff;
+        background: #2BB673;
+      }
+
+      .close-button {
+        width: 100%;
+        color: #fff;
+        background: lightgray;
+      }
+
+      .small-price {
+        font-size:1.375em;
+        position:absolute;
+      }
+      .large-price {
+        font-size:2.45em;
+        position:absolute;
+        left:26px;
+      }
+
+      paper-button {
+        min-width:3em;
+      }
+      paper-button.bordered {
+        border: 1px solid #000;
+      }
+
+      .quantity-box {
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px;
+        border-radius: 6px;
+        padding: 2px 20px;
+        background: #ccc;
+        margin-right: 4px;
+        background: #cecece;
+      }
+
+      .quantity-box h4 {
+        font-weight:bold;
+      }
+      .images img{
+        width: 100%;
+      }
+
+
     </style>
-    <h2>Hello [[prop1]]!</h2>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="images">
+            <img src="[[product.images.0.name]]" alt="product image">
+          </div>
+        </div>
+      </div>
+      <div class="row category-heading">
+        <div class="col-xs-8 heading-section">
+
+          <h3>[[product.name]]</h3>
+          <span><small>[[product.shortDescription]]</small></span>
+        </div>
+        <div class="col-xs-4">
+          <span><small><del>R[[product.price]]</del></small></span>
+          <div><span class="small-price">R</span><span class="large-price">[[product.price]]</span></div>
+        </div>
+      </div>
+      <div class="row category-heading">
+        <div class="col-xs-12">
+          <h3>Product Description</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <p>[[product.description]]</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+
+          <div class="row category-heading clear-heading">
+            <div class="col-xs-4">
+              Quantity
+            </div>
+            <div class="col-xs-8">
+
+              <div class="pull-right">
+                <paper-button class="bordered pull-right">+</paper-button>
+                <paper-button class="bordered pull-right">-</paper-button>
+              </div>
+              <div class="quantity-box pull-right"><h4>1</h4></div>
+            </div>
+          </div>
+          <div class="row category-heading clear-heading">
+            <div class="col-xs-6">
+              Total:
+            </div>
+            <div class="col-xs-6">
+              <span class="pull-right">R [-[total]-]</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 add-button-row">
+          <paper-button class="add-button" on-tap="_onAddCartItem">Add to Cart</paper-button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 close-button-row">
+          <paper-button class="close-button" on-tap="_closeSingleProduct">Back</paper-button>
+        </div>
+      </div>
+    </div>
+    </div>
   </template>
 
   <script>
-    /**
-     * `oc-single-product`
-     * Show a single product of an organisation.
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class OcSingleProduct extends Polymer.Element {
-      static get is() { return 'oc-single-product'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'oc-single-product'
+      /**
+       * `oc-single-product`
+       * Show a single product of an organisation.
+       *
+       * @customElement
+       * @polymer
+       * @demo demo/index.html
+       */
+      class OcSingleProduct extends Polymer.Element {
+          static get is() { return 'oc-single-product'; }
+          static get properties() {
+              return {
+                  product: {
+                      type: Number,
+                      value: {}
+                  }
+              };
           }
-        };
-      }
-    }
 
-    window.customElements.define(OcSingleProduct.is, OcSingleProduct);
+          ready() {
+              super.ready();
+              this._init();
+              this.addEventListener('add-cart-item', (e)=>this._onAddCartItem(e));
+          }
+
+          _init() {
+
+          }
+
+
+          /**
+           * Close the product to show the list of products. Listens in shop-product-list
+           */
+          _closeSingleProduct () {
+              this.dispatchEvent(new CustomEvent('close-single-product', {
+                  bubbles: true, composed: true
+              }));
+          }
+
+
+          _onAddCartItem(event) {
+              if (!this._cartModal) {
+                  this._cartModal = document.createElement('shop-cart-modal');
+                  this.root.appendChild(this._cartModal);
+              }
+              this.$.cart.addItem(event.detail);
+              this._cartModal.open();
+              this._announce('Item added to the cart');
+          }
+
+
+      }
+
+      window.customElements.define(OcSingleProduct.is, OcSingleProduct);
   </script>
 </dom-module>

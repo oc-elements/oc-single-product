@@ -94,11 +94,13 @@
         <div class="col-xs-8 heading-section">
 
           <h3>[[product.name]]</h3>
-          <span><small>[[product.shortDescription]]</small></span>
+          <span><small>[[product.shortDescription]]
+          </small></span>
+          <span>[[product.id]]</span>
         </div>
         <div class="col-xs-4">
           <span><small><del>R[[product.price]]</del></small></span>
-          <div><span class="small-price">R</span><span class="large-price">[[product.price]]</span></div>
+          <div><span class="small-price">R</span><span class="large-price" id="product-price">[[product.price]]</span></div>
         </div>
       </div>
       <div class="row category-heading">
@@ -121,10 +123,11 @@
             <div class="col-xs-8">
 
               <div class="pull-right">
-                <paper-button class="bordered pull-right">+</paper-button>
-                <paper-button class="bordered pull-right">-</paper-button>
+                <paper-button class="bordered pull-right" on-tap="_increaseValue">+</paper-button>
+                <paper-input id="quantity-input" value="{{_cartData.quantity}}"></paper-input>
+                <paper-button class="bordered pull-right" on-tap="_decreaseValue">-</paper-button>
               </div>
-              <div class="quantity-box pull-right"><h4>1</h4></div>
+              <div class="quantity-box pull-right"><h4>{{_cartData.quantity}}</h4></div>
             </div>
           </div>
           <div class="row category-heading clear-heading">
@@ -132,14 +135,14 @@
               Total:
             </div>
             <div class="col-xs-6">
-              <span class="pull-right">R [-[total]-]</span>
+              <span class="pull-right">R </span><span id="total-cost">{{total-cost}}</span>
             </div>
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12 add-button-row">
-          <paper-button class="add-button" on-tap="_onAddCartItem">Add to Cart</paper-button>
+          <paper-button class="add-button" on-tap="_addToCart">Add to Cart</paper-button>
         </div>
       </div>
       <div class="row">
@@ -147,7 +150,6 @@
           <paper-button class="close-button" on-tap="_closeSingleProduct">Back</paper-button>
         </div>
       </div>
-    </div>
     </div>
   </template>
 
@@ -162,26 +164,41 @@
        */
       class OcSingleProduct extends Polymer.Element {
           static get is() { return 'oc-single-product'; }
-          static get properties() {
-              return {
-                  product: {
-                      type: Number,
-                      value: {}
-                  }
-              };
+          static get properties() { return {
+              product: {
+                  type: Number,
+                  value: {}
+              },
+
+              _cartData: {
+                  type:Object,
+                  value: {}
+              },
+
+              userId: {
+                  type: Number,
+                  value:  OC.identity.userId
+              }
+          };
           }
 
           ready() {
               super.ready();
               this._init();
               this.addEventListener('add-cart-item', (e)=>this._onAddCartItem(e));
+//              this.addEventListener('increase-value', (e)=>this._increaseValue(e));
+//              this.addEventListener('decrease-value', (e)=>this._decreaseValue(e));
           }
 
           _init() {
-
+              this._checkValues();
           }
 
-
+          _checkValues() {
+              this.productId;
+              this.userId;
+              this._cartData.quantity;
+          }
           /**
            * Close the product to show the list of products. Listens in shop-product-list
            */
@@ -191,20 +208,40 @@
               }));
           }
 
+          /**
+           * Add item to cart
+           */
 
-          _onAddCartItem(event) {
-              if (!this._cartModal) {
-                  this._cartModal = document.createElement('shop-cart-modal');
-                  this.root.appendChild(this._cartModal);
-              }
-              this.$.cart.addItem(event.detail);
-              this._cartModal.open();
-              this._announce('Item added to the cart');
+          _addToCart(event) {
+              let data = {}
+              data.quantity = this._cartData.quantity;
+              data.productId = this.product.id;
+
+              this.dispatchEvent(new CustomEvent('add-to-cart', {
+                  bubbles: true, composed: true, detail:
+                      {cartData: data}
+              }));
           }
 
+          _increaseValue() {
+              var value = parseInt(this.shadowRoot.getElementById('quantity-input').value, 10);
+              value = isNaN(value) ? 1 : value;
+              value++;
+              this.shadowRoot.getElementById('quantity-input').value = value;
+          }
 
+          _decreaseValue() {
+              var value = parseInt(this.shadowRoot.getElementById('quantity-input').value, 10);
+              value = isNaN(value) ? 1 : value;
+              value < 1 ? value = 1 : '';
+              value--;
+              this.shadowRoot.getElementById('quantity-input').value = value;
+          }
       }
 
       window.customElements.define(OcSingleProduct.is, OcSingleProduct);
   </script>
 </dom-module>
+
+
+

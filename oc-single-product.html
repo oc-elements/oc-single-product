@@ -124,10 +124,10 @@
 
               <div class="pull-right">
                 <paper-button class="bordered pull-right" on-tap="_increaseValue">+</paper-button>
-                <paper-input id="quantity-input" value="{{_cartData.quantity}}"></paper-input>
+                <paper-input id="quantity-input" value="{{product.initQuantity}}"></paper-input>
                 <paper-button class="bordered pull-right" on-tap="_decreaseValue">-</paper-button>
               </div>
-              <div class="quantity-box pull-right"><h4>{{_cartData.quantity}}</h4></div>
+              <div class="quantity-box pull-right"><h4>{{product.initQuantity}}</h4></div>
             </div>
           </div>
           <div class="row category-heading clear-heading">
@@ -178,7 +178,13 @@
               userId: {
                   type: Number,
                   value:  OC.identity.userId
+              },
+              _cartDataQuantity: {
+                  type: Number,
+                  value: 1,
+                  notify: true
               }
+
           };
           }
 
@@ -186,8 +192,8 @@
               super.ready();
               this._init();
               this.addEventListener('add-cart-item', (e)=>this._onAddCartItem(e));
-//              this.addEventListener('increase-value', (e)=>this._increaseValue(e));
-//              this.addEventListener('decrease-value', (e)=>this._decreaseValue(e));
+              this.addEventListener('increase-value', (e)=>this._increaseValue(e));
+              this.addEventListener('decrease-value', (e)=>this._decreaseValue(e));
           }
 
           _init() {
@@ -197,7 +203,6 @@
           _checkValues() {
               this.productId;
               this.userId;
-              this._cartData.quantity;
           }
           /**
            * Close the product to show the list of products. Listens in shop-product-list
@@ -214,14 +219,16 @@
 
           _addToCart(event) {
               let data = {}
-              data.quantity = this._cartData.quantity;
+              data.quantity = this.product.initQuantity;
               data.productId = this.product.id;
-
+              // need to add check for empty call.
               this.dispatchEvent(new CustomEvent('add-to-cart', {
                   bubbles: true, composed: true, detail:
                       {cartData: data}
               }));
           }
+
+
 
           _increaseValue() {
               var value = parseInt(this.shadowRoot.getElementById('quantity-input').value, 10);
@@ -232,8 +239,8 @@
 
           _decreaseValue() {
               var value = parseInt(this.shadowRoot.getElementById('quantity-input').value, 10);
-              value = isNaN(value) ? 1 : value;
-              value < 1 ? value = 1 : '';
+              value = isNaN(value) ? 2 : value;
+              value < 2 ? value = 2 : '';
               value--;
               this.shadowRoot.getElementById('quantity-input').value = value;
           }
@@ -242,6 +249,3 @@
       window.customElements.define(OcSingleProduct.is, OcSingleProduct);
   </script>
 </dom-module>
-
-
-

@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../oc-product-api/oc-product-api.html">
+<link rel="import" href="../oc-toast/oc-toast.html">
 
 <dom-module id="oc-single-product">
   <template>
@@ -82,6 +83,7 @@
 
 
     </style>
+    <oc-toast id="toast"></oc-toast>
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-12">
@@ -170,8 +172,8 @@
                   value: {}
               },
 
-              _cartData: {
-                  type:Object,
+              cartData: {
+                  type: Object,
                   value: {}
               },
 
@@ -213,12 +215,26 @@
               }));
           }
 
+          // Check if next item's seller matches with the sellers in current cart
+          _isValidToAddNewItems() {
+              for (let i = 0; i < this.cartData.items.length; i++) {
+                  if (this.cartData.items[i].detail.organisation.id === this.product.organisation.id) continue;
+
+                  this.$.toast.failed("You may only have one seller's items in basket \n" +
+                      "First checkout or remove the other seller's items from cart.");
+                  return false
+              }
+              return true
+          }
+
           /**
            * Add item to cart
            */
-
           _addToCart(event) {
-              let data = {}
+              // Don't add item to cart if false
+              if (!this._isValidToAddNewItems()) return;
+
+              let data = {};
               data.quantity = this.product.initQuantity;
               data.productId = this.product.id;
               // need to add check for empty call.
@@ -227,8 +243,6 @@
                       {cartData: data}
               }));
           }
-
-
 
           _increaseValue() {
               var value = parseInt(this.shadowRoot.getElementById('quantity-input').value, 10);

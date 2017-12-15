@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../oc-product-api/oc-product-api.html">
 <link rel="import" href="../oc-toast/oc-toast.html">
-<link rel="import" href="../oc-core-utils/oc-store.html">
+
 
 <dom-module id="oc-single-product">
   <template>
@@ -165,7 +165,7 @@
        * @polymer
        * @demo demo/index.html
        */
-      class OcSingleProduct extends OC.ReduxMixin(Polymer.Element) {
+      class OcSingleProduct extends olymer.Element {
           static get is() { return 'oc-single-product'; }
           static get properties() { return {
               product: {
@@ -176,11 +176,6 @@
               cartData: {
                   type: Object,
                   value: {}
-              },
-
-              userId: {
-                  type: Number,
-                  statePath:  'user.user.id'
               },
               _cartDataQuantity: {
                   type: Number,
@@ -194,19 +189,12 @@
           ready() {
               super.ready();
               this._init();
-              this.addEventListener('add-cart-item', (e)=>this._onAddCartItem(e));
               this.addEventListener('increase-value', (e)=>this._increaseValue(e));
               this.addEventListener('decrease-value', (e)=>this._decreaseValue(e));
           }
 
-          _init() {
-              this._checkValues();
-          }
 
-          _checkValues() {
-              this.productId;
-              this.userId;
-          }
+
           /**
            * Close the product to show the list of products. Listens in shop-product-list
            */

@@ -206,12 +206,14 @@
 
           // Check if next item's seller matches with the sellers in current cart
           _isValidToAddNewItems() {
-              for (let i = 0; i < this.cartData.items.length; i++) {
-                  if (this.cartData.items[i].detail.organisation.id === this.product.organisation.id) continue;
+              if(this.cartData.items) {
+                  for (let i = 0; i < this.cartData.items.length; i++) {
+                      if (this.cartData.items[i].detail.organisation.id === this.product.organisation.id) continue;
 
-                  this.$.toast.failed("You may only have one seller's items in basket \n" +
-                      "First checkout or remove the other seller's items from cart.");
-                  return false
+                      this.$.toast.failed("You may only have one seller's items in basket \n" +
+                          "First checkout or remove the other seller's items from cart.");
+                      return false
+                  }
               }
               return true
           }

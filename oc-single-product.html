@@ -7,6 +7,7 @@
   <template>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
+
       :host {
         display: block;
         font-family: var(--paper-font-common-base_-_font-family);
@@ -100,7 +101,9 @@
           </small></span>
         </div>
         <div class="col-xs-4">
-          <span><small><del>R[[product.price]]</del></small></span>
+          <template is="dom-if" is="[[item.discount">
+            <span><small><del>R[[product.discount.originalPrice]]</del></small></span>
+          </template>
           <div><span class="small-price">R</span><span class="large-price" id="product-price">[[product.price]]</span></div>
         </div>
       </div>

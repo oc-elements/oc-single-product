@@ -12,6 +12,17 @@
         display: block;
         font-family: var(--paper-font-common-base_-_font-family);
 
+        --paper-input-container:{
+          border: 1px solid #000;
+          padding: 0 !important;
+          width:50px;
+        };
+        --paper-input-container-input: {
+          margin-left: 10px;
+        };
+        --paper-input-container-label: {
+          margin-left: 10px;
+        };
       }
 
       .category-heading {
@@ -58,51 +69,41 @@
         left:26px;
       }
 
-      paper-button {
-        min-width:3em;
-      }
       paper-button.bordered {
         border: 1px solid #000;
       }
 
-      .quantity-box {
-        -webkit-border-radius: 6px;
-        -moz-border-radius: 6px;
-        border-radius: 6px;
-        padding: 2px 20px;
-        background: #ccc;
-        margin-right: 4px;
-        background: #cecece;
-      }
-
-      .quantity-box h4 {
-        font-weight:bold;
-      }
       .images img{
-        width: 100%;
+        text-align: center;
+        padding:5px;
+        display: block;
+        margin:auto;
+        max-height:180px;
       }
 
+      .horizontal {
+        @apply(--layout-horizontal);
+      }
 
     </style>
-    <oc-toast id="toast"></oc-toast>
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-12">
-          <div class="images">
-            <img src="[[product.images.0.name]]" alt="product image">
+          <div class="images center">
+            <img src="[[product.images.0.name]]" alt="product image" class="center">
           </div>
         </div>
       </div>
       <div class="row category-heading">
         <div class="col-xs-8 heading-section">
-
           <h3>[[product.name]]</h3>
           <span><small>[[product.shortDescription]]
           </small></span>
-          <span>[[product.id]]</span>
         </div>
         <div class="col-xs-4">
-          <span><small><del>R[[product.price]]</del></small></span>
+          <template is="dom-if" is="[[item.discount">
+            <span><small><del>R[[product.discount.originalPrice]]</del></small></span>
+          </template>
           <div><span class="small-price">R</span><span class="large-price" id="product-price">[[product.price]]</span></div>
         </div>
       </div>
@@ -125,12 +126,12 @@
             </div>
             <div class="col-xs-8">
 
-              <div class="pull-right">
-                <paper-button class="bordered pull-right" on-tap="_increaseValue">+</paper-button>
-                <paper-input id="quantity-input" value="{{product.initQuantity}}"></paper-input>
-                <paper-button class="bordered pull-right" on-tap="_decreaseValue">-</paper-button>
+              <div class="horizontal">
+                <paper-button class="bordered" on-tap="_decreaseValue"><iron-icon icon="icons:remove"></iron-icon></paper-button>
+                <paper-input class="inline-input" id="quantity-input" value="{{product.initQuantity}}"></paper-input>
+                <paper-button class="bordered " on-tap="_increaseValue"><iron-icon icon="icons:add"></iron-icon></paper-button>
               </div>
-              <div class="quantity-box pull-right"><h4>{{product.initQuantity}}</h4></div>
+              <!--<div class="quantity-box pull-right"><h4>{{product.initQuantity}}</h4></div>-->
             </div>
           </div>
           <div class="row category-heading clear-heading">
@@ -138,7 +139,7 @@
               Total:
             </div>
             <div class="col-xs-6">
-              <span class="pull-right">R </span><span id="total-cost">{{total-cost}}</span>
+              <span class="pull-right">R </span>
             </div>
           </div>
         </div>

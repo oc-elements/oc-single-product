@@ -34,7 +34,7 @@
         border-bottom: 1px #cecece solid;
         background: #f8f8f8;
         color: #000;
-		    margin: -1px -15px 0 -15px;
+		margin: -1px -15px 0 -15px;
       }
       .clear-heading {
         background: #fff;
@@ -47,7 +47,7 @@
 	  }
       h3 {
         font-size:1.23em !important;
-		    font-weight:800 !important;
+		font-weight:800 !important;
         margin: 10px 0 !important;
       }
 
@@ -68,9 +68,9 @@
       }
 
       .large-price {
-		    color: #2BB673;
+		color: #2BB673;
         font-size:1.45em;
-		    font-weight: 800 !important;
+		font-weight: 800 !important;
         position:absolute;
       }
 
@@ -123,12 +123,15 @@
 		</div>
         <div class="col-xs-6">
 			<div class="horizontal">
-				<span style="margin-top:10px">Qty</span> <iron-input><input class="pull-right" id="" value="{{product.initQuantity}}" type="number" placeholder="1" allowed-pattern="[0-9]"style="width: 60px;
+				<span style="margin-top:10px">Qty</span>
+				<iron-input bind-value="{{product.initQuantity}}"><input class="pull-right" id="" bind-value="{{value::input}}" type="number" placeholder="1" allowed-pattern="[0-9]"style="width: 60px;
 					margin-left: 10px;
 					margin-top: 10px;
 					padding: 0px 5px;
 					border: 1px solid #000;
-					border-radius: 5px;"></input></iron-input>
+					border-radius: 5px;">
+					</input>
+				</iron-input>
 				<span style="margin: 10px 0 0 10px;
 					background: orange;
 					color: #fff;

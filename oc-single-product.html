@@ -10,17 +10,31 @@
 
       :host {
         display: block;
-		    background: #f8f8f8;
+		background: #f8f8f8;
         font-family: var(--paper-font-common-base_-_font-family);
-		    --paper-input-container-input-color: black;
-
+		--paper-input-container-input-color: black;
+		/* --iron-input: {
+			border: 1px solid;
+			padding: 2px;
+			border-radius: 5px;
+		} */
         --paper-input-container:{
-        position: absolute;
-        top:-20px;
-        right:20px;
-        width:50px !important;
+          /* border: 1px solid #000; */
+		  position: absolute;
+		  top:-20px;
+		  right:20px;
+          /* padding: 0 !important; */
+          width:50px !important;
+		  /* height: 30px; */
+		  /* border-radius:5px; */
+		  /* font-size:6px; */
         };
-
+        /* --paper-input-container-input: {
+          margin-left: 10px;
+        };
+        --paper-input-container-label: {
+          margin-left: 10px;
+        }; */
 		--paper-input: {
 			width:20px;
 		};
@@ -92,7 +106,8 @@
         @apply(--layout-horizontal);
       }
 
-    </style>
+	</style>
+	<oc-toast id="toast"></oc-toast>
     <div class="container-fluid">
       <div class="row category-heading">
         <div class="col-xs-5">
@@ -103,7 +118,7 @@
 		<div class="col-xs-7 heading-section">
 				<h3>[[product.name]]</h3>
 					<span>[[product.shortDescription]]</span>
-				<template is="dom-if" is="[[item.discount">
+				<template is="dom-if" if="[[item.discount">
 						<span>R[[product.discount.originalPrice]]</del></small></span>
 					  </template>
 				<div><span class="large-price" id="product-price">R [[product.price]]</span></div>
@@ -115,40 +130,75 @@
         <div class="col-xs-4">
 
         </div>
-      </div>
-      <div class="row category-heading">
-		<div class="col-xs-6">
-			<div>[[product.name]]</div>
-			<div>@ R[[product.price]]</div>
-		</div>
-        <div class="col-xs-6">
-			<div class="horizontal">
-				<span style="margin-top:10px">Qty</span>
-				<iron-input bind-value="{{product.initQuantity}}"><input class="pull-right" id="" bind-value="{{value::input}}" type="number" placeholder="1" allowed-pattern="[0-9]"style="width: 60px;
-					margin-left: 10px;
-					margin-top: 10px;
-					padding: 0px 5px;
-					border: 1px solid #000;
-					border-radius: 5px;">
-					</input>
-				</iron-input>
-				<span style="margin: 10px 0 0 10px;
+	  </div>
+	  <template is="dom-if" if="[[!product.optionSets.0]]">
+		<div class="row category-heading">
+			<div class="col-xs-6">
+				<div>[[product.name]]</div>
+				<div>@ R[[product.price]]</div>
+			</div>
+			<div class="col-xs-6">
+				<div class="horizontal">
+					<span style="margin-top:10px">Qty</span>
+					<iron-input bind-value="{{_quantity}}"><input class="pull-right" id="" bind-value="{{_quantity::input}}" type="number" placeholder="1" allowed-pattern="[0-9]"style="width: 60px;
+						margin-left: 10px;
+						margin-top: 10px;
+						padding: 0px 5px;
+						border: 1px solid #000;
+						border-radius: 5px;">
+						</input>
+					</iron-input>
+					<span style="margin: 10px 0 0 10px;
 					background: orange;
 					color: #fff;
-					font-size: 19px;
-					border-radius: 50%;
-					padding: 0px 8px;
-					width: 26px;
-					height: 26px;" on-tap="_addToCart">+</span>
+					font-size: 11px;
+					border-radius: 5px;
+					padding: 6px 8px;
+					height: 26px;" on-tap="_addToCart">ADD</span>
+				</div>
 			</div>
-			<!-- <div class="quantity-box pull-right"><h4>{{product.initQuantity}}</h4></div> -->
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-12 product-description">
-          <p>[[product.description]]</p>
-        </div>
-      </div>
+		</div>
+		<div class="row">
+		  <div class="col-xs-12 product-description">
+			<p><pre style="white-space:pre-wrap">[[product.description]]</pre></p>
+		  </div>
+		</div>
+	  </template>
+	  <template is="dom-if" if="[[product.optionSets.0]]">
+		  <template is="dom-repeat" items="[[product.optionSets.0.options]]" as="item" selected="[[selectedOption._selectedQuantity]]">
+		<div class="row category-heading">
+			<div class="col-xs-6">
+				<div>[[item.name]]</div>
+				<div>@ R[[item.price]]</div>
+			</div>
+			<div class="col-xs-6">
+				<div class="horizontal">
+					<span style="margin-top:10px">Qty</span>
+					<iron-input bind-value="{{item._selectedQuantity}}"><input class="pull-right" id="" bind-value="{{_selectedQuantity::input}}" type="number" placeholder="0" allowed-pattern="[0-9]"style="width: 60px;
+						margin-left: 10px;
+						margin-top: 10px;
+						padding: 0px 5px;
+						border: 1px solid #000;
+						border-radius: 5px;">
+					</input>
+					</iron-input>
+					<span style="margin: 10px 0 0 10px;
+						background: orange;
+						color: #fff;
+						font-size: 11px;
+						border-radius: 5px;
+						padding: 6px 8px;
+						height: 26px;" on-tap="_addOptionToCart">ADD</span>
+				</div>
+			</div>
+		</div>
+	</template>
+	<div class="row">
+		<div class="col-xs-12 product-description">
+			<p><pre style="white-space:pre-wrap">[[product.description]]</pre></p>
+		</div>
+	</div>
+	</template>
     </div>
   </template>
 
@@ -172,18 +222,31 @@
 			  	productObject: {
 					type:Object
 				},
-              _cartDataQuantity: {
-                  type: Number,
-                  value: 1,
-                  notify: true
-              }
+				_quantity: {
+					type: Number,
+					notify: true,
+					value: 1
+				},
+				_selectedQuantity: {
+					type: Number,
+					notify: true,
+					value: 1
+				},
+        _cartDataQuantity: {
+            type: Number,
+            value: 1,
+            notify: true
+        }
 
-          };
-          }
+		  };
 
+		  }
           ready() {
               super.ready();
-          }
+		  }
+		  setQuantity(_selectedQuantity) {
+				this._selectedQuantity = 1;
+		  }
           /**
            * Close the product to show the list of products. Listens in shop-product-list
            */
@@ -208,19 +271,50 @@
           }
 
           /**
-           * Add item to cart
+           * Add item or option to cart
            */
+
           _addToCart(event) {
               // Don't add item to cart if false
               if (!this._isValidToAddNewItems()) return;
 			  this.productObject = {
 						item: this.product,
-						quantity: this.product.initQuantity
+						quantity: this._quantity
 					}
               this.dispatchEvent(new CustomEvent('add-to-cart', {
 				bubbles: true, composed: true, detail: this.productObject
-              }));
-          }
+			  }));
+			  this._quantity = 1;
+		  }
+		  _addOptionToCart(e){
+              // Don't add item to cart if false
+			if (!this._isValidToAddNewItems()) return;
+			if (e.model.item._selectedQuantity > 0) {
+			this.mainProduct = {
+					item: this.product,
+					quantity: e.model.item._selectedQuantity
+				};
+				this.productOption = {
+					item:  {
+
+					},
+				};
+
+			  let productMerged = Object.assign({}, this.mainProduct.item, this.productOption.item );
+			  this.productObject = {
+
+						item: productMerged,
+						quantity: e.model.item._selectedQuantity,
+						options: e.model.item
+					}
+              this.dispatchEvent(new CustomEvent('add-to-cart', {
+				bubbles: true, composed: true, detail: this.productObject
+			  }));
+			}
+			else {
+				this.$.toast.failed("Quantity of 1 or more required.");
+			}
+		  }
       }
 
       window.customElements.define(OcSingleProduct.is, OcSingleProduct);
